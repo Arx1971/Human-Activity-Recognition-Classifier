@@ -54,24 +54,6 @@ test = pd.read_csv("test.csv")
 ```python
 train.head()
 ```
-
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -227,28 +209,6 @@ train.head()
 
 
 
-
-```python
-test.head()
-```
-
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -465,55 +425,7 @@ test.isnull().any()
 ### Train Data Vizualization 
 
 
-```python
-plt.figure(figsize=(10,8))
-plt.title('Barplot of Activity')
-sns.countplot(train.Activity)
-plt.xticks(rotation=90)
-```
-
-
-
-
-    (array([0, 1, 2, 3, 4, 5]), <a list of 6 Text major ticklabel objects>)
-
-
-
-
 ![png](output_13_1.png)
-
-
-
-```python
-X_for_tsne = train.drop(['subject', 'Activity'], axis=1)
-%time
-tsne = TSNE(random_state = 42, n_components=2, verbose=1, perplexity=50, n_iter=1000).fit_transform(X_for_tsne)
-plt.figure(figsize=(12,8))
-sns.scatterplot(x =tsne[:, 0], y = tsne[:, 1], hue = train["Activity"],palette="bright")
-```
-
-    Wall time: 0 ns
-    [t-SNE] Computing 151 nearest neighbors...
-    [t-SNE] Indexed 7352 samples in 1.380s...
-    [t-SNE] Computed neighbors for 7352 samples in 45.078s...
-    [t-SNE] Computed conditional probabilities for sample 1000 / 7352
-    [t-SNE] Computed conditional probabilities for sample 2000 / 7352
-    [t-SNE] Computed conditional probabilities for sample 3000 / 7352
-    [t-SNE] Computed conditional probabilities for sample 4000 / 7352
-    [t-SNE] Computed conditional probabilities for sample 5000 / 7352
-    [t-SNE] Computed conditional probabilities for sample 6000 / 7352
-    [t-SNE] Computed conditional probabilities for sample 7000 / 7352
-    [t-SNE] Computed conditional probabilities for sample 7352 / 7352
-    [t-SNE] Mean sigma: 1.437672
-    [t-SNE] KL divergence after 250 iterations with early exaggeration: 74.125595
-    [t-SNE] KL divergence after 1000 iterations: 1.282857
-    
-
-
-
-
-    <matplotlib.axes._subplots.AxesSubplot at 0x2de671e1448>
-
 
 
 
@@ -521,43 +433,10 @@ sns.scatterplot(x =tsne[:, 0], y = tsne[:, 1], hue = train["Activity"],palette="
 
 
 
-```python
-sns.heatmap(train.isnull(), yticklabels=False, cbar=False, cmap='viridis')
-```
-
-
-
-
-    <matplotlib.axes._subplots.AxesSubplot at 0x2de6793e208>
-
-
-
 
 ![png](output_15_1.png)
 
 
-
-```python
-train.describe()
-```
-
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -785,88 +664,6 @@ train.describe()
 
 
 
-
-```python
-train.Activity.unique()
-```
-
-
-
-
-    array(['STANDING', 'SITTING', 'LAYING', 'WALKING', 'WALKING_DOWNSTAIRS',
-           'WALKING_UPSTAIRS'], dtype=object)
-
-
-
-
-```python
-train.Activity.value_counts()
-```
-
-
-
-
-    LAYING                1407
-    STANDING              1374
-    SITTING               1286
-    WALKING               1226
-    WALKING_UPSTAIRS      1073
-    WALKING_DOWNSTAIRS     986
-    Name: Activity, dtype: int64
-
-
-
-
-```python
-X_train = train.drop('Activity', axis=1)
-y_train = train['Activity']
-X_test = test.drop('Activity', axis=1)
-y_test = test['Activity']
-```
-
-### Decision Tree Classifier
-
-#### Using RandomizedSearchCV to find the best depth
-
-
-```python
-parameters_for_decision_tree = {'max_depth' : [5,6,7,8,9,10,15], 
-                                'min_samples_leaf': [2,4,6], 
-                                'criterion': ['gini', 'entropy']}
-clf = DecisionTreeClassifier()
-rs_cv_classifier = RandomizedSearchCV(clf, param_distributions=parameters_for_decision_tree, random_state=42)
-rs_cv_classifier.fit(X_train, y_train)
-rs_cv_pred = rs_cv_classifier.predict(X_test)
-
-print('Classifier Accuracy Score: ', accuracy_score(y_test, rs_cv_pred))
-```
-
-    Classifier Accuracy Score:  0.8605361384458772
-    
-
-#### Saving The Decision Tree Classifier
-
-
-```python
-dump(rs_cv_classifier, 'rs_cv_model.joblib') 
-```
-
-
-
-
-    ['rs_cv_model.joblib']
-
-
-
-
-```python
-rs_cv_model = load('rs_cv_model.joblib')
-rs_cv_model
-```
-
-
-
-
     RandomizedSearchCV(cv=None, error_score=nan,
                        estimator=DecisionTreeClassifier(ccp_alpha=0.0,
                                                         class_weight=None,
@@ -892,24 +689,9 @@ rs_cv_model
 
 
 
-```python
-rs_cv_pred = rs_cv_model.predict(X_test)
-print('Classifier Accuracy Score: ', accuracy_score(y_test, rs_cv_pred))
-```
 
-    Classifier Accuracy Score:  0.8605361384458772
-    
 
 #### Confusion Matrix
-
-
-```python
-colormap = plt.cm.viridis
-cf_matrix = confusion_matrix(y_test.values, rs_cv_pred)
-f,ax=plt.subplots(figsize=(15,10))
-sns.heatmap(cf_matrix, annot=True, ax=ax, cmap=colormap)
-plt.show()
-```
 
 
 ![png](output_28_0.png)
@@ -917,10 +699,6 @@ plt.show()
 
 #### Classification Report
 
-
-```python
-print(classification_report(y_test, rs_cv_pred))
-```
 
                         precision    recall  f1-score   support
     
@@ -935,31 +713,8 @@ print(classification_report(y_test, rs_cv_pred))
              macro avg       0.86      0.86      0.86      2947
           weighted avg       0.86      0.86      0.86      2947
     
-    
-
-
-```python
-print('Model Best Parameters: ', rs_cv_model.best_params_)
-print('Model Best Parameters: ', rs_cv_model.best_score_)
-```
-
-    Model Best Parameters:  {'min_samples_leaf': 6, 'max_depth': 6, 'criterion': 'entropy'}
-    Model Best Parameters:  0.8669746620606095
-    
 
  ### K - Nearest Neighbor
-
-
-```python
-parameters_for_knn = {'leaf_size' : [100, 200, 400],
-                        'n_neighbors' : [5, 10, 15, 20],
-                         'weights' :['uniform', 'distance']}
-knn = KNeighborsClassifier()
-
-knn_grid_search_cv = GridSearchCV(knn, parameters_for_knn, cv = 10)
-
-knn_grid_search_cv.fit(X_train, y_train)
-```
 
 
 
@@ -976,13 +731,6 @@ knn_grid_search_cv.fit(X_train, y_train)
                              'weights': ['uniform', 'distance']},
                  pre_dispatch='2*n_jobs', refit=True, return_train_score=False,
                  scoring=None, verbose=0)
-
-
-
-
-```python
-knn_grid_search_cv.cv_results_
-```
 
 
 
@@ -1119,49 +867,3 @@ knn_grid_search_cv.cv_results_
             0.06411713, 0.06493891, 0.0629104 , 0.06403336]),
      'rank_test_score': array([ 7, 10,  4,  1, 16, 13, 19, 22,  7, 10,  4,  1, 16, 13, 19, 22,  7,
             10,  4,  1, 16, 13, 19, 22])}
-
-
-
-
-```python
-knn_prediction = knn_grid_search_cv.predict(X_test)
-
-print('Accuracy Scoore for K-Nearest Neighbors:', accuracy_score(y_test, knn_prediction))
-```
-
-    Accuracy Scoore for K-Nearest Neighbors: 0.8113335595520869
-    
-
-#### Saving K - Nearest Neighbors Model
-
-
-```python
-dump(knn_grid_search_cv, 'knn_grid_search_model.joblib')
-```
-
-
-
-
-    ['knn_grid_search_model.joblib']
-
-
-
-
-```python
-knn_grid_search_cv_model = load('knn_grid_search_model.joblib')
-```
-
-
-```python
-print('Model Best Parameters: ', knn_grid_search_cv_model.best_params_)
-print('Model Best Parameters: ', knn_grid_search_cv_model.best_score_)
-```
-
-    Model Best Parameters:  {'leaf_size': 100, 'n_neighbors': 10, 'weights': 'distance'}
-    Model Best Parameters:  0.8291759094942324
-    
-
-
-```python
-
-```
