@@ -1,59 +1,4 @@
-```python
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-import warnings
-warnings.filterwarnings('ignore')
-from sklearn.model_selection import train_test_split
-```
-
-
-```python
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
-from sklearn import svm
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.model_selection import RandomizedSearchCV
-from sklearn.metrics import accuracy_score
-from joblib import dump
-from joblib import load
-from sklearn.metrics import confusion_matrix
-from sklearn.manifold import TSNE
-from sklearn.metrics import classification_report
-from sklearn.model_selection import GridSearchCV
-from sklearn.neighbors import KNeighborsClassifier
-```
-
-
-```python
-try:
-    from StringIO import StringIO
-except ImportError:
-    from io import StringIO
-```
-
-
-```python
-from sklearn.externals.six import StringIO  
-from IPython.display import Image  
-from sklearn.tree import export_graphviz
-import pydotplus
-```
-
-### Train and Test Data
-
-
-```python
-train = pd.read_csv("train.csv")
-test = pd.read_csv("test.csv")
-```
-
-
-```python
-train.head()
-```
+### Train Data 
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -207,7 +152,7 @@ train.head()
 <p>5 rows × 563 columns</p>
 </div>
 
-
+### Test Data
 
 <table border="1" class="dataframe">
   <thead>
@@ -363,78 +308,19 @@ train.head()
 </div>
 
 
-
-
-```python
-print(train.shape)
-print(test.shape)
-```
-
-    (7352, 563)
-    (2947, 563)
-    
-
-### Exploratory Data Analysis
-
-
-```python
-train.isnull().any()
-```
-
-
-
-
-    tBodyAcc-mean()-X       False
-    tBodyAcc-mean()-Y       False
-    tBodyAcc-mean()-Z       False
-    tBodyAcc-std()-X        False
-    tBodyAcc-std()-Y        False
-                            ...  
-    angle(X,gravityMean)    False
-    angle(Y,gravityMean)    False
-    angle(Z,gravityMean)    False
-    subject                 False
-    Activity                False
-    Length: 563, dtype: bool
-
-
-
-
-```python
-test.isnull().any()
-```
-
-
-
-
-    tBodyAcc-mean()-X       False
-    tBodyAcc-mean()-Y       False
-    tBodyAcc-mean()-Z       False
-    tBodyAcc-std()-X        False
-    tBodyAcc-std()-Y        False
-                            ...  
-    angle(X,gravityMean)    False
-    angle(Y,gravityMean)    False
-    angle(Z,gravityMean)    False
-    subject                 False
-    Activity                False
-    Length: 563, dtype: bool
-
-
-
 ### Train Data Vizualization 
+
+#### Trainning Classes
 
 
 ![png](output_13_1.png)
 
 
 
+#### How Training data are speread into data set
+
 ![png](output_14_2.png)
 
-
-
-
-![png](output_15_1.png)
 
 
 <table border="1" class="dataframe">
@@ -663,6 +549,8 @@ test.isnull().any()
 </div>
 
 
+### Best Parameter for DecisionTreeClassifier Using RandomSearchCV
+
 
     RandomizedSearchCV(cv=None, error_score=nan,
                        estimator=DecisionTreeClassifier(ccp_alpha=0.0,
@@ -691,7 +579,7 @@ test.isnull().any()
 
 
 
-#### Confusion Matrix
+#### Decision Tree Confusion Matrix
 
 
 ![png](output_28_0.png)
@@ -714,10 +602,12 @@ test.isnull().any()
           weighted avg       0.86      0.86      0.86      2947
     
 
+
  ### K - Nearest Neighbor
 
 
 
+#### Hyperparameter Tuning using GridSearchCV
 
     GridSearchCV(cv=10, error_score=nan,
                  estimator=KNeighborsClassifier(algorithm='auto', leaf_size=30,
@@ -733,7 +623,7 @@ test.isnull().any()
                  scoring=None, verbose=0)
 
 
-
+#### Parameters Cross validation Scores
 
     {'mean_fit_time': array([0.9833288 , 1.01018047, 0.97393866, 1.03180003, 1.00484285,
             1.0009861 , 0.95736079, 0.95537102, 0.86311636, 0.83865423,
